@@ -37,3 +37,9 @@ npm run build
 ```sh
 npm run lint
 ```
+
+### to add components for old 0.11.4 shadcn version
+
+```sh
+npx shadcn-vue@^0.11.4 add input
+```
