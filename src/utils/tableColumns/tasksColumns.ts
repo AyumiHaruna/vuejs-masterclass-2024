@@ -10,7 +10,7 @@ export const columns: ColumnDef<TasksWithProjectsQuery[0]>[] = [
       return h(
         RouterLink,
         {
-          to: `/projects/${row.original.id}`,
+          to: `/tasks/${row.original.id}`,
           class: 'text-left font-medium hover:bg-muted block w-full'
         },
         () => row.getValue('name')
