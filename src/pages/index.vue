@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+  usePageStore().pageData.title = 'Homepage'
 </script>
 
 <template>

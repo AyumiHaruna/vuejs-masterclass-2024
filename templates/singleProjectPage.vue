@@ -1,32 +1,8 @@
-<script setup lang="ts">
-import { projectQuery } from '@/utils/supaQueries'
-import type { Project } from '@/utils/supaQueries'
-
-  const route = useRoute('/projects/[slug]')
-
-  const project = ref<Project | null>(null)
-
-  watch(() => project.value?.name, () => {
-    usePageStore().pageData.title = `Project: ${project.value?.name || ''}`
-  })
-
-  const getProjects = async () => {
-    console.log(route.params.slug)
-    const { data, error } = await projectQuery(route.params.slug)
-
-    if (error) console.log(error)
-
-    project.value = data
-  }
-
-  await getProjects()
-</script>
-
 <template>
-  <Table v-if="project">
+  <Table>
     <TableRow>
       <TableHead> Name </TableHead>
-      <TableCell> {{ project.name }} </TableCell>
+      <TableCell> Lorem ipsum dolor sit amet. </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Description </TableHead>
