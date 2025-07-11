@@ -8,15 +8,14 @@ usePageStore().pageData.title = 'My Tasks'
 const tasks = ref<TasksWithProjectsQuery | null>(null)
 // Immediately Invoked Function Expression (executed as soon as file loaded)
 const getTasks = async () => {
-  const { data, error } = await tasksWithProjectsQuery
+  const { data, error, status } = await tasksWithProjectsQuery
 
-  if (error) console.log(error)
+  if (error) useErrorStore().setError({error, customCode: status})
 
   tasks.value = data
 }
 
 await getTasks();
-
 </script>
 
 <template>

@@ -9,9 +9,9 @@ const projects = ref<Projects | null>(null)
 
 // Immediately Invoked Function Expression (executed as soon as file loaded)
 const getProjects = async () => {
-  const { data, error } = await projectsQuery
+  const { data, error, status } = await projectsQuery
 
-  if (error) console.log(error)
+  if (error) useErrorStore().setError({error, customCode: status})
 
   projects.value = data
 }

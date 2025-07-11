@@ -12,8 +12,9 @@ import type { Task } from '@/utils/supaQueries';
 
   const getTask =  async() => {
     console.log('route params', route.params)
-    const {data, error} = await taskQuery(route.params.id)
-    if(error) console.log(error)
+    const {data, error, status} = await taskQuery(route.params.id)
+
+    if (error) useErrorStore().setError({error, customCode: status})
 
     task.value = data
   }
