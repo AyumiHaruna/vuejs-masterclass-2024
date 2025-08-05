@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import AppErrorDevSection from './AppErrorDevSection.vue'
-
   const router = useRouter()
 
   const errorStore = useErrorStore()
@@ -27,7 +25,7 @@ import AppErrorDevSection from './AppErrorDevSection.vue'
     statusCode.value = error.value.statusCode ?? 0
   }
 
-  const errorTemplate = import.meta.env.DEV ?
+  const ErrorTemplate = import.meta.env.DEV ?
     defineAsyncComponent(() => import('./AppErrorDevSection.vue')) :
     defineAsyncComponent(() => import('./AppErrorProdSection.vue'))
 
@@ -38,7 +36,13 @@ import AppErrorDevSection from './AppErrorDevSection.vue'
 
 <template>
 	<section class="error">
-    <errorTemplate :message :customCode :details :code :hint :statusCode
+    <ErrorTemplate
+      :message
+      :customCode
+      :details
+      :code
+      :hint
+      :statusCode
       :isCustomError="errorStore.isCustomError"
     />
   </section>

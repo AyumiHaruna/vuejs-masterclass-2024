@@ -13,9 +13,9 @@
 <template>
   <div>
     <iconify-icon icon="lucide:triangle-alert" class="error__icon" />
-    <h1 class="error__code">{{customCode || code}}</h1>
-    <p v-if="statusCode" class="error__code">Status Code: {{statusCode}}</p>
-    <p class="error__msg">{{message}}</p>
+    <h1 class="error__code">{{ customCode || code }}</h1>
+    <p class="error__code" v-if="statusCode">Status Code: {{ statusCode }}</p>
+    <p class="error__msg">{{ message }}</p>
     <p v-if="hint">{{ hint }}</p>
     <p v-if="details">{{ details }}</p>
     <div class="error-footer">
