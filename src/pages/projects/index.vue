@@ -1,25 +1,21 @@
 <script setup lang="ts">
-import { projectsQuery } from '@/utils/supaQueries';
-import { columns } from '@/utils/tableColumns/projectsColumns';
-import type { Projects } from '@/utils/supaQueries';
+import { columns } from '@/utils/tableColumns/projectsColumns'
 
 usePageStore().pageData.title = 'Projects'
 
-const projects = ref<Projects | null>(null)
+const projectsLoader = useProjectsStore()
+const { projects } = storeToRefs(projectsLoader)
+const { getProjects } = projectsLoader
 
-// Immediately Invoked Function Expression (executed as soon as file loaded)
-const getProjects = async () => {
-  const { data, error, status } = await projectsQuery
+await getProjects()
 
-  if (error) useErrorStore().setError({error, customCode: status})
+const { getGroupedCollabs, groupedCollabs } = useCollabs()
 
-  projects.value = data
-}
+getGroupedCollabs(projects.value ?? [])
 
-await getProjects();
-
+const columnsWithCollabs = columns(groupedCollabs)
 </script>
 
 <template>
-  <DataTable v-if="projects" :columns="columns" :data="projects" />
+  <DataTable v-if="projects" :columns="columnsWithCollabs" :data="projects" />
 </template>

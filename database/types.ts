@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -47,8 +47,8 @@ export type Database = {
       projects: {
         Row: {
           collaborators: string[]
-          create_at: string
-          description: string | null
+          created_at: string
+          description: string
           id: number
           name: string
           slug: string
@@ -56,8 +56,8 @@ export type Database = {
         }
         Insert: {
           collaborators?: string[]
-          create_at?: string
-          description?: string | null
+          created_at?: string
+          description?: string
           id?: never
           name: string
           slug: string
@@ -65,8 +65,8 @@ export type Database = {
         }
         Update: {
           collaborators?: string[]
-          create_at?: string
-          description?: string | null
+          created_at?: string
+          description?: string
           id?: never
           name?: string
           slug?: string
@@ -82,6 +82,7 @@ export type Database = {
           due_date: string | null
           id: number
           name: string
+          profile_id: string
           project_id: number | null
           status: Database["public"]["Enums"]["current_status"]
         }
@@ -92,6 +93,7 @@ export type Database = {
           due_date?: string | null
           id?: never
           name: string
+          profile_id: string
           project_id?: number | null
           status?: Database["public"]["Enums"]["current_status"]
         }
@@ -102,10 +104,18 @@ export type Database = {
           due_date?: string | null
           id?: never
           name?: string
+          profile_id?: string
           project_id?: number | null
           status?: Database["public"]["Enums"]["current_status"]
         }
         Relationships: [
+          {
+            foreignKeyName: "tasks_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tasks_project_id_fkey"
             columns: ["project_id"]

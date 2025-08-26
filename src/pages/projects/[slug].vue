@@ -1,42 +1,49 @@
 <script setup lang="ts">
-import { projectQuery } from '@/utils/supaQueries'
-import type { Project } from '@/utils/supaQueries'
+const { slug } = useRoute('/projects/[slug]').params
 
-  const route = useRoute('/projects/[slug]')
+const projectsLoader = useProjectsStore()
+const { project } = storeToRefs(projectsLoader)
+const { getProject, updateProject } = projectsLoader
 
-  const project = ref<Project | null>(null)
-
-  watch(() => project.value?.name, () => {
+watch(
+  () => project.value?.name,
+  () => {
     usePageStore().pageData.title = `Project: ${project.value?.name || ''}`
-  })
+  },
+)
 
-  const getProjects = async () => {
-    console.log(route.params.slug)
-    const { data, error, status } = await projectQuery(route.params.slug)
+await getProject(slug)
 
-    if (error) useErrorStore().setError({error, customCode: status})
+const { getProfilesByIds } = useCollabs()
 
-    project.value = data
-  }
-
-  await getProjects()
+const collabs = project.value?.collaborators
+  ? await getProfilesByIds(project.value?.collaborators)
+  : []
 </script>
 
 <template>
   <Table v-if="project">
     <TableRow>
       <TableHead> Name </TableHead>
-      <TableCell> {{ project.name }} </TableCell>
+      <TableCell>
+        <AppInPlaceEditText v-model="project.name" @commit="updateProject" />
+      </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Description </TableHead>
       <TableCell>
-        {{ project.description }}
+      <AppInPlaceEditTextarea
+          class="h-20"
+          v-model="project.description"
+          @commit="updateProject"
+        />
       </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Status </TableHead>
-      <TableCell>{{ project.status }}</TableCell>
+      <TableCell>
+        <AppInPlaceEditStatus v-model="project.status" @commit="updateProject" />
+      </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Collaborators </TableHead>
@@ -44,11 +51,17 @@ import type { Project } from '@/utils/supaQueries'
         <div class="flex">
           <Avatar
             class="-mr-4 border border-primary hover:scale-110 transition-transform"
-            v-for="collab in project.collaborators"
-            :key="collab"
+            v-for="collab in collabs"
+            :key="collab.id"
           >
-            <RouterLink class="w-full h-full flex items-center justify-center" to="">
-              <AvatarImage src="" alt="" />
+            <RouterLink
+              class="w-full h-full flex items-center justify-center"
+              :to="{
+                name: '/users/[username]',
+                params: { username: collab.username },
+              }"
+            >
+              <AvatarImage :src="collab.avatar_url || ''" alt="" />
               <AvatarFallback> </AvatarFallback>
             </RouterLink>
           </Avatar>
@@ -71,9 +84,18 @@ import type { Project } from '@/utils/supaQueries'
           </TableHeader>
           <TableBody>
             <TableRow v-for="task in project.tasks" :key="task.id">
-              <TableCell> Lorem ipsum dolor sit amet. </TableCell>
-              <TableCell> In progress </TableCell>
-              <TableCell> 22/08/2024 </TableCell>
+              <TableCell class="p-0">
+                <RouterLink
+                  class="text-left block hover:bg-muted p-4"
+                  :to="{ name: '/tasks/[id]', params: { id: task.id } }"
+                >
+                  {{ task.name }}
+                </RouterLink>
+              </TableCell>
+              <TableCell>
+                <AppInPlaceEditStatus readonly :modelValue="task.status" />
+              </TableCell>
+              <TableCell> {{ task.due_date }} </TableCell>
             </TableRow>
           </TableBody>
         </Table>
